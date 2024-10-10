@@ -3,12 +3,9 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { useAppKit } from '@reown/appkit-wagmi-react-native'
-
+import ConnectView from '@/components/ConnectView';
 
 export default function HomeScreen() {
-  const {open} = useAppKit();
-
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -49,9 +46,7 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
-      <Pressable onPress={() => open()}>
-        <ThemedText>Open Connect Modal</ThemedText>
-      </Pressable>
+      <ConnectView />
     </ParallaxScrollView>
   );
 }

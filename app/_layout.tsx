@@ -1,10 +1,11 @@
+import '@walletconnect/react-native-compat'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import '@walletconnect/react-native-compat'
+
 import { WagmiProvider } from 'wagmi'
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { baseSepolia } from "viem/chains";
@@ -15,7 +16,7 @@ import { createAppKit, defaultWagmiConfig, AppKit } from '@reown/appkit-wagmi-re
 const queryClient = new QueryClient()
 
 // 1. Get projectId at https://cloud.reown.com
-const projectId = process.env.EXPO_PUBLIC_PROJECT_ID ?? "";
+const projectId = "b505d9048a489182eda5f28455a1f2db";
 
 // 2. Create config
 const metadata = {
@@ -30,7 +31,6 @@ const metadata = {
 }
 
 const chains = [baseSepolia] as const
-
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 
 // 3. Create modal
@@ -38,6 +38,7 @@ createAppKit({
   projectId,
   wagmiConfig,
   defaultChain: baseSepolia, // Optional
+  enableAnalytics: false
 })
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
