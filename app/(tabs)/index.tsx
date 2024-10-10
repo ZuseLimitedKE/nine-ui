@@ -1,36 +1,13 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
+import { Image, StyleSheet, Platform, Pressable } from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import "@/pollyfills";
-import {baseSepolia} from "viem/chains";
-import { createPublicClient, formatEther, http } from 'viem';
-import { useEffect, useState } from 'react';
+import { useAppKit } from '@reown/appkit-wagmi-react-native'
 
-const publicClient = createPublicClient({
-  chain: baseSepolia,
-  transport: http()
-})
 
 export default function HomeScreen() {
-  const [blockNumber, setBlockNumber] = useState(0n);
-  const [gasPrice, setGasPrice] = useState(0n);
-
-  useEffect(() => {
-    const getNetworkData = async () => {
-      const [blockNumber, gasPrice] = await Promise.all([
-          publicClient.getBlockNumber(),
-          publicClient.getGasPrice(),
-      ])
-
-      setBlockNumber(blockNumber)
-      setGasPrice(gasPrice)
-    }
-
-    getNetworkData();
-  }, []);
+  const {open} = useAppKit();
 
   return (
     <ParallaxScrollView
@@ -41,10 +18,6 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
-      <ThemedView>
-        <ThemedText>Block number: {String(blockNumber)}</ThemedText>
-        <ThemedText>Gas Price: {formatEther(gasPrice)}</ThemedText>
-      </ThemedView>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
@@ -76,6 +49,9 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
+      <Pressable onPress={() => open()}>
+        <ThemedText>Open Connect Modal</ThemedText>
+      </Pressable>
     </ParallaxScrollView>
   );
 }
