@@ -1,4 +1,7 @@
-import { Image, StyleSheet, Platform, Pressable } from 'react-native';
+
+import '@walletconnect/react-native-compat'
+import {useWalletConnectModal, WalletConnectModal} from "@walletconnect/modal-react-native";
+import { Image, StyleSheet, Platform, Pressable, Button } from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -12,7 +15,22 @@ const publicClient = createPublicClient({
   transport: http()
 })
 
+const projectId = 'YOUR_PROJECT_ID'
+
+const providerMetadata = {
+  name: 'Example dApp',
+  description: 'Modern Example dApp from Callstack',
+  url: 'https://callstack.com/',
+  icons: ['https://example.com/'],
+  redirect: {
+    native: 'YOUR_APP_SCHEME://',
+    universal: 'YOUR_APP_UNIVERSAL_LINK.com'
+  }
+}
+
 export default function HomeScreen() {
+  const { open, isConnected, provider, address: wcAddress } = useWalletConnectModal()
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -53,6 +71,9 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
+      <Button title="Connect Wallet" onPress={() => open()}/>
+
+      <WalletConnectModal projectId={projectId} providerMetadata={providerMetadata}/>
     </ParallaxScrollView>
   );
 }
