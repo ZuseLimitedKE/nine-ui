@@ -4,6 +4,14 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import "@/pollyfills";
+import {baseSepolia} from "viem/chains";
+import { createPublicClient, http } from 'viem';
+
+const publicClient = createPublicClient({
+  chain: baseSepolia,
+  transport: http()
+})
 
 export default function HomeScreen() {
   return (
