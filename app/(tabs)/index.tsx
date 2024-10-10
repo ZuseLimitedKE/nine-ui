@@ -8,7 +8,9 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import "@/pollyfills";
 import {baseSepolia} from "viem/chains";
-import { createPublicClient, http } from 'viem';
+import { createPublicClient, http, Address } from 'viem';
+import abiFile from "@/abi.json";
+const abi = abiFile.abi;
 
 const publicClient = createPublicClient({
   chain: baseSepolia,
@@ -28,9 +30,20 @@ const providerMetadata = {
   }
 }
 
-export default function HomeScreen() {
-  const { open, isConnected, provider, address: wcAddress } = useWalletConnectModal()
 
+
+export default function HomeScreen() {
+  const { open, isConnected, provider, address: wcAddress } = useWalletConnectModal();
+  const address = wcAddress as Address | undefined;
+
+  async function payForRequest() {
+    try {
+      
+    } catch(err) {
+      console.log("Could Not Pay For Request");
+    }
+  }
+  
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
