@@ -3,7 +3,14 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import ConnectView from '@/components/ConnectView';
+import "@/pollyfills";
+import {baseSepolia} from "viem/chains";
+import { createPublicClient, http } from 'viem';
+
+const publicClient = createPublicClient({
+  chain: baseSepolia,
+  transport: http()
+})
 
 export default function HomeScreen() {
   return (
@@ -46,7 +53,6 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
-      <ConnectView />
     </ParallaxScrollView>
   );
 }
