@@ -6,7 +6,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import "@/pollyfills";
 import {baseSepolia} from "viem/chains";
-import { createPublicClient, http } from 'viem';
+import { createPublicClient, formatEther, http } from 'viem';
+import { useEffect, useState } from 'react';
 
 const publicClient = createPublicClient({
   chain: baseSepolia,
@@ -14,6 +15,23 @@ const publicClient = createPublicClient({
 })
 
 export default function HomeScreen() {
+  const [blockNumber, setBlockNumber] = useState(0n);
+  const [gasPrice, setGasPrice] = useState(0n);
+
+  useEffect(() => {
+    const getNetworkData = async () => {
+      const [blockNumber, gasPrice] = await Promise.all([
+          publicClient.getBlockNumber(),
+          publicClient.getGasPrice(),
+      ])
+
+      setBlockNumber(blockNumber)
+      setGasPrice(gasPrice)
+    }
+
+    getNetworkData();
+  }, []);
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -23,6 +41,10 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
+      <ThemedView>
+        <ThemedText>Block number: {String(blockNumber)}</ThemedText>
+        <ThemedText>Gas Price: {formatEther(gasPrice)}</ThemedText>
+      </ThemedView>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
