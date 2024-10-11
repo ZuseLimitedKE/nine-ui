@@ -44,6 +44,7 @@ export default function HomeScreen() {
   async function payForRequest() {
     try {
         if (isConnected) {
+            console.log("Address =>", address);
             const contract = getContract({
               //@ts-ignore
               address: process.env.EXPO_PUBLIC_CONTRACT_ADDRESS ?? "0xA0023Da71C274906F4c851DD8407E961667B26D5",
@@ -60,13 +61,13 @@ export default function HomeScreen() {
               gas: 1000000n,
               gasPrice: 10000000000n,
               functionName: 'payForRequest',
-              args: ["0x2430a23DD12afB0391c7f5E5AE013FA5cc23074d", 10, "Test CID 2"],
+              args: ["0xB71232D96A0Bc81684CC3892d47032eB8cB40E36", 10, "Test CID 2"],
               value: 10n
             });
-            const txHash = await walletClient.writeContract(request);
-            console.log("Transaction =>", txHash);
 
             // Write request
+            const txHash = await walletClient.writeContract(request);
+            console.log("Transaction =>", txHash);
         } else {
             console.log("Wallet Not Connected");
         }

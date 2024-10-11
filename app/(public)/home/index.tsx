@@ -20,10 +20,10 @@ interface Slide {
 
 // Define images object
 const images = {
-  fingerprint: require("../assets/images/fingerp.png"),
-  keyp: require("../assets/images/keyp.png"),
-  faster: require("../assets/images/fasterp.png"),
-  logo: require("../assets/images/ninepay.png"),
+  fingerprint: require("../../../assets/images/fingerp.png"),
+  keyp: require("../../../assets/images/keyp.png"),
+  faster: require("../../../assets/images/fasterp.png"),
+  logo: require("../../../assets/images/ninepay.png"),
 };
 const { width } = Dimensions.get("window");
 
