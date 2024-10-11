@@ -17,7 +17,7 @@ const publicClient = createPublicClient({
   transport: http()
 })
 
-const projectId = 'YOUR_PROJECT_ID'
+const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
 
 const providerMetadata = {
   name: 'Example dApp',
