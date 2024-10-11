@@ -8,7 +8,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import "@/pollyfills";
 import {baseSepolia} from "viem/chains";
-import { createPublicClient, http, Address } from 'viem';
+import { createPublicClient, http, Address, getContract, createWalletClient, parseEther, parseGwei } from 'viem';
 import abiFile from "@/abi.json";
 const abi = abiFile.abi;
 
@@ -16,6 +16,11 @@ const publicClient = createPublicClient({
   chain: baseSepolia,
   transport: http()
 })
+
+const walletClient = createWalletClient({
+  chain: baseSepolia,
+  transport: http()
+});
 
 const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
 
@@ -38,9 +43,35 @@ export default function HomeScreen() {
 
   async function payForRequest() {
     try {
-      
+        if (isConnected) {
+            const contract = getContract({
+              //@ts-ignore
+              address: process.env.EXPO_PUBLIC_CONTRACT_ADDRESS ?? "0xA0023Da71C274906F4c851DD8407E961667B26D5",
+              abi,
+              client: walletClient
+            });
+
+            // Simulate to get request
+            const {request} = await publicClient.simulateContract({
+              account: address,
+              //@ts-ignore
+              address: process.env.EXPO_PUBLIC_CONTRACT_ADDRESS ?? "0xA0023Da71C274906F4c851DD8407E961667B26D5",
+              abi,
+              gas: 1000000n,
+              gasPrice: 10000000000n,
+              functionName: 'payForRequest',
+              args: ["0x2430a23DD12afB0391c7f5E5AE013FA5cc23074d", 10, "Test CID 2"],
+              value: 10n
+            });
+            const txHash = await walletClient.writeContract(request);
+            console.log("Transaction =>", txHash);
+
+            // Write request
+        } else {
+            console.log("Wallet Not Connected");
+        }
     } catch(err) {
-      console.log("Could Not Pay For Request");
+      console.log("Could Not Pay For Request =>", err);
     }
   }
   
@@ -85,8 +116,9 @@ export default function HomeScreen() {
         </ThemedText>
       </ThemedView>
       <Button title="Connect Wallet" onPress={() => open()}/>
+      <Button title="Pay For Request" onPress={payForRequest} />
 
-      <WalletConnectModal projectId={projectId} providerMetadata={providerMetadata}/>
+      <WalletConnectModal projectId={projectId ?? ""} providerMetadata={providerMetadata}/>
     </ParallaxScrollView>
   );
 }
