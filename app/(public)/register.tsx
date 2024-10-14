@@ -35,7 +35,7 @@ const Register = () => {
 
     try {
       // Set user synced to false
-      await SecureStore.setItemAsync(HAS_SYNCED_USER_DETAILS, FALSE);
+      // await SecureStore.setItemAsync(HAS_SYNCED_USER_DETAILS, FALSE);
 
       // Create the user on Clerk
       await signUp.create({

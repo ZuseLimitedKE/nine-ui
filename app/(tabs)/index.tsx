@@ -38,7 +38,7 @@ const providerMetadata = {
 
 
 export default function HomeScreen() {
-  const { open, isConnected, provider, address: wcAddress } = useWalletConnectModal();
+  const { open, isConnected, provider, address: wcAddress, close } = useWalletConnectModal();
   const address = wcAddress as Address | undefined;
 
   async function payForRequest() {
@@ -52,21 +52,27 @@ export default function HomeScreen() {
               client: walletClient
             });
 
-            // Simulate to get request
-            const {request} = await publicClient.simulateContract({
-              account: address,
-              //@ts-ignore
-              address: process.env.EXPO_PUBLIC_CONTRACT_ADDRESS ?? "0xA0023Da71C274906F4c851DD8407E961667B26D5",
-              abi,
-              gas: 1000000n,
-              gasPrice: 10000000000n,
-              functionName: 'payForRequest',
-              args: ["0xB71232D96A0Bc81684CC3892d47032eB8cB40E36", 10, "Test CID 2"],
-              value: 10n
+            const txHash = await walletClient.sendTransaction({
+              account: address ?? "0x0",
+              to: "0xB71232D96A0Bc81684CC3892d47032eB8cB40E36",
+              value: 100000000n
             });
 
-            // Write request
-            const txHash = await walletClient.writeContract(request);
+            // // Simulate to get request
+            // const {request} = await publicClient.simulateContract({
+            //   account: address,
+            //   //@ts-ignore
+            //   address: process.env.EXPO_PUBLIC_CONTRACT_ADDRESS ?? "0xA0023Da71C274906F4c851DD8407E961667B26D5",
+            //   abi,
+            //   gas: 1000000n,
+            //   gasPrice: 10000000000n,
+            //   functionName: 'payForRequest',
+            //   args: ["0xB71232D96A0Bc81684CC3892d47032eB8cB40E36", 10, "Test CID 2"],
+            //   value: 10n
+            // });
+
+            // // Write request
+            // const txHash = await walletClient.writeContract(request);
             console.log("Transaction =>", txHash);
         } else {
             console.log("Wallet Not Connected");
@@ -118,6 +124,14 @@ export default function HomeScreen() {
       </ThemedView>
       <Button title="Connect Wallet" onPress={() => open()}/>
       <Button title="Pay For Request" onPress={payForRequest} />
+      <Button title="Disconnect Wallet" onPress={() => {
+        try {
+          console.log("Disconenctiong"); 
+          console.log("Done closing")
+        } catch(err) {
+          console.log("Error Closing =>", err);
+        }
+      }}/>
 
       <WalletConnectModal projectId={projectId ?? ""} providerMetadata={providerMetadata}/>
     </ParallaxScrollView>
