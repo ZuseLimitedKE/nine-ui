@@ -1,75 +1,23 @@
-
-import '@walletconnect/react-native-compat'
-import {useWalletConnectModal, WalletConnectModal} from "@walletconnect/modal-react-native";
 import { Image, StyleSheet, Platform, Pressable, Button } from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import "@/pollyfills";
-import {baseSepolia} from "viem/chains";
-import { createPublicClient, http, Address, getContract, createWalletClient, parseEther, parseGwei } from 'viem';
-import abiFile from "@/abi.json";
-const abi = abiFile.abi;
 
-const publicClient = createPublicClient({
-  chain: baseSepolia,
-  transport: http()
-})
+import { MetaMaskWallet } from "@thirdweb-dev/wallets";
+import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+import {BaseSepoliaTestnet} from "@thirdweb-dev/chains"
 
-const walletClient = createWalletClient({
-  chain: baseSepolia,
-  transport: http()
+const metamaskwallet = new MetaMaskWallet({
+  clientId: process.env.EXPO_PUBLIC_THIRDWEB_CLIENT_ID,
+  chains: [BaseSepoliaTestnet]
 });
 
-const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
-
-const providerMetadata = {
-  name: 'Example dApp',
-  description: 'Modern Example dApp from Callstack',
-  url: 'https://callstack.com/',
-  icons: ['https://example.com/'],
-  redirect: {
-    native: 'YOUR_APP_SCHEME://',
-    universal: 'YOUR_APP_UNIVERSAL_LINK.com'
-  }
-}
-
-
-
 export default function HomeScreen() {
-  const { open, isConnected, provider, address: wcAddress } = useWalletConnectModal();
-  const address = wcAddress as Address | undefined;
-
   async function payForRequest() {
     try {
-        if (isConnected) {
-            const contract = getContract({
-              //@ts-ignore
-              address: process.env.EXPO_PUBLIC_CONTRACT_ADDRESS ?? "0xA0023Da71C274906F4c851DD8407E961667B26D5",
-              abi,
-              client: walletClient
-            });
-
-            // Simulate to get request
-            const {request} = await publicClient.simulateContract({
-              account: address,
-              //@ts-ignore
-              address: process.env.EXPO_PUBLIC_CONTRACT_ADDRESS ?? "0xA0023Da71C274906F4c851DD8407E961667B26D5",
-              abi,
-              gas: 1000000n,
-              gasPrice: 10000000000n,
-              functionName: 'payForRequest',
-              args: ["0x2430a23DD12afB0391c7f5E5AE013FA5cc23074d", 10, "Test CID 2"],
-              value: 10n
-            });
-            const txHash = await walletClient.writeContract(request);
-            console.log("Transaction =>", txHash);
-
-            // Write request
-        } else {
-            console.log("Wallet Not Connected");
-        }
+      const walletAddress = await metamaskwallet.connect();
+      console.log("Wallet Address =>", walletAddress);
     } catch(err) {
       console.log("Could Not Pay For Request =>", err);
     }
@@ -115,10 +63,7 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
-      <Button title="Connect Wallet" onPress={() => open()}/>
-      <Button title="Pay For Request" onPress={payForRequest} />
-
-      <WalletConnectModal projectId={projectId ?? ""} providerMetadata={providerMetadata}/>
+      <Button title="Pay For Request" onPress={() => payForRequest()}/>
     </ParallaxScrollView>
   );
 }
